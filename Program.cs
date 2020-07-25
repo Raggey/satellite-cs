@@ -11,15 +11,9 @@ namespace Satellite_cs
         string line0 = "ISS (ZARYA)    ";
         string line1 = "1 25544U 98067A   20206.38292522 -.00000985  00000-0 -95291-5 0  9998";
         string line2 = "2 25544  51.6430 164.3636 0001088 140.8410 323.1994 15.49511774237787";
+        
 
         Tle iss = new Tle(line0,line1,line2); 
-
-        Console.WriteLine(iss.line1.ToString());
-
-         foreach(String s in iss.line1) 
-        { 
-            Console.WriteLine(s); 
-        } 
 
         Console.WriteLine(iss.catalogNumber);
         Console.WriteLine(iss.classification);
@@ -29,7 +23,25 @@ namespace Satellite_cs
         Console.WriteLine(iss.meanMotion_sd);
         Console.WriteLine(iss.dragTerm);
         Console.WriteLine(iss.ephemerisType);
-        Console.WriteLine(iss.elementNoCheckSum);
+
+
+        Console.WriteLine(iss.elementSetNumber);
+        Console.WriteLine(iss.checksum1);
+
+
+        Console.WriteLine(iss.inclination);
+        Console.WriteLine(iss.rightAscension);
+        Console.WriteLine(iss.eccentricity);
+        Console.WriteLine(iss.argumentPerigee);
+        Console.WriteLine(iss.meanAnomaly);
+        Console.WriteLine(iss.meanMotion);
+        Console.WriteLine(iss.revNumAtEpoch);
+        Console.WriteLine(iss.checksum2);
+
+
+//         ISS DEB                 
+// 1 44306U 98067QD  20206.84164985  .00003039  00000-0  52283-4 0  9991
+// 2 44306  51.6395 152.6366 0007210 101.5333 258.6468 15.54606462 65585
 
 
         }
