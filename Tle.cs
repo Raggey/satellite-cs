@@ -89,6 +89,27 @@
       // replace multiple whitespace
       return Regex.Replace(str, @"\s+", " ");
     }
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
 
 
