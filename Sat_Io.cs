@@ -155,14 +155,10 @@ namespace Satellite_cs{
       }
 
       // const mdhmsResult = days2mdhms(year, satrec.epochdays);
-      //  const {
-      //   mon,
-      //   day,
-      //   hr,
-      //   minute,
-      //   sec,
-      // } = mdhmsResult;
-      // satrec.jdsatepoch = jday(year, mon, day, hr, minute, sec);
+      Ext ext = new Ext();
+      MdhmsResult mdhmsResult = ext.days2mdhms(year, satrec.epochdays);
+
+      satrec.jdsatepoch = ext.jday(year, mdhmsResult.mon, mdhmsResult.day, mdhmsResult.hr, mdhmsResult.minute, mdhmsResult.sec);
 
       //  ---------------- initialize the orbit at sgp4epoch -------------------
       // sgp4init(satrec, {
@@ -178,11 +174,24 @@ namespace Satellite_cs{
       //   xnodeo: satrec.nodeo,
       // });
 
+      Sgp4initOptions sgp4initOptions = new Sgp4initOptions();  
+      sgp4initOptions.opsmode = opsmode;
+      sgp4initOptions.satn = satrec.satnum;
+      sgp4initOptions.epoch = satrec.jdsatepoch - 2433281.5;
+      sgp4initOptions.xbstar = satrec.bstar;
+      sgp4initOptions.xecco = satrec.ecco;
+      sgp4initOptions.xargpo = satrec.argpo;
+      sgp4initOptions.xinclo = satrec.inclo;
+      sgp4initOptions.xmo = satrec.mo;
+      sgp4initOptions.xno = satrec.no;
+      sgp4initOptions.xnodeo = satrec.nodeo;
+
+      Sgp4init sgp4init  = new Sgp4init();
+      sgp4init.sgp4init(satrec, sgp4initOptions);
+
 
       return satrec;
       
-
-
     }
 
 

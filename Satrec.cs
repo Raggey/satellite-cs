@@ -20,6 +20,7 @@ namespace Satellite_cs{
     public double a;
     public double alta;
     public double altp;
+    public double jdsatepoch;
 
     
 
