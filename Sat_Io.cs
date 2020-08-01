@@ -111,7 +111,7 @@ namespace Satellite_cs{
       satrec.nodeo = double.Parse(longstr2.Substring(17, 8));
       // satrec.ecco = parseFloat(`.${longstr2.substring(26, 33)}`);
       string ecco = "." + longstr2.Substring(26, 7);
-      satrec.ecco = float.Parse(ecco);
+      satrec.ecco = double.Parse(ecco);
       // satrec.argpo = parseFloat(longstr2.substring(34, 42));
       satrec.argpo = double.Parse(longstr2.Substring(34, 8));
       // satrec.mo = parseFloat(longstr2.substring(43, 51));

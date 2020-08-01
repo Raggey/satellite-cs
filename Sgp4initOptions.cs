@@ -6,13 +6,14 @@ namespace Satellite_cs{
     
 
     public char opsmode;
-    public double satn;
+    public string satn;
     public double epoch;
     public double xbstar;
     public double xecco;
     public double xargpo;
     public double xinclo;
     public double xmo;
+    public double xno;
     public double xnodeo;
 
 
