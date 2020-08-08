@@ -131,6 +131,7 @@ namespace Satellite_cs{
       } else {
 
         gsto = 0; //placeholder until gstime implemented;
+        //TODO: impl gstime
         // gsto = gstime(epoch + 2433281.5);
       }
 

@@ -1,3 +1,5 @@
+using System;
+
 namespace Satellite_cs{
 
   public class Sgp4init{
@@ -259,7 +261,7 @@ namespace Satellite_cs{
       Initl initl = new Initl();
       InitlResult initlResult = new InitlResult();
 
-      initlResult = initl.initl(initlOptions);
+      initlResult = initl.initl(initlOptions); //TODO: Finish impl
       
       double ao = initlResult.ao;
       double con42 = initlResult.con42;
@@ -278,6 +280,207 @@ namespace Satellite_cs{
       satrec.error = 0;
 
 
+
+
+
+
+
+    // sgp4fix remove this check as it is unnecessary
+    // the mrt check in sgp4 handles decaying satellite cases even if the starting
+    // condition is below the surface of te earth
+    // if (rp < 1.0)
+    // {
+    //   printf("// *** satn%d epoch elts sub-orbital ***\n", satn);
+    //   satrec.error = 5;
+    // }
+
+
+    if (omeosq >= 0.0 || satrec.no >= 0.0) {
+      satrec.isimp = 0;
+      if (rp < (220.0 / earthRadius + 1.0)) {
+        satrec.isimp = 1;
+      }
+      sfour = ss;
+      qzms24 = qzms2t;
+      perige = (rp - 1.0) * earthRadius;
+
+      // - for perigees below 156 km, s and qoms2t are altered -
+      if (perige < 156.0) {
+        sfour = perige - 78.0;
+        if (perige < 98.0) {
+          sfour = 20.0;
+        }
+
+        // sgp4fix use multiply for speed instead of pow
+        double qzms24temp = (120.0 - sfour) / earthRadius;
+        qzms24 = qzms24temp * qzms24temp * qzms24temp * qzms24temp;
+        sfour = (sfour / earthRadius) + 1.0;
+      }
+      pinvsq = 1.0 / posq;
+
+      tsi = 1.0 / (ao - sfour);
+      satrec.eta = ao * satrec.ecco * tsi;
+      etasq = satrec.eta * satrec.eta;
+      eeta = satrec.ecco * satrec.eta;
+      psisq = Math.Abs(1.0 - etasq);
+      coef = qzms24 *  Math.Pow(tsi,4.0) ;
+      coef1 = coef /  (Math.Pow(psisq, 3.5));
+      cc2 = coef1 * satrec.no * ((ao * (1.0 + (1.5 * etasq) + (eeta * (4.0 + etasq))))
+        + (((0.375 * j2 * tsi) / psisq) * satrec.con41
+          * (8.0 + (3.0 * etasq * (8.0 + etasq)))));
+      satrec.cc1 = satrec.bstar * cc2;
+      cc3 = 0.0;
+      if (satrec.ecco > 1.0e-4) {
+        cc3 = (-2.0 * coef * tsi * j3oj2 * satrec.no * sinio) / satrec.ecco;
+      }
+      satrec.x1mth2 = 1.0 - cosio2;
+      satrec.cc4 = 2.0 * satrec.no * coef1 * ao * omeosq * (
+        ((satrec.eta * (2.0 + (0.5 * etasq)))
+          + (satrec.ecco * (0.5 + (2.0 * etasq))))
+        - (((j2 * tsi) / (ao * psisq))
+          * ((-3.0 * satrec.con41 * ((1.0 - (2.0 * eeta)) + (etasq * (1.5 - (0.5 * eeta)))))
+            + (0.75 * satrec.x1mth2
+              * ((2.0 * etasq) - (eeta * (1.0 + etasq)))
+              * Math.Cos(2.0 * satrec.argpo))))
+      );
+      satrec.cc5 = 2.0 * coef1 * ao * omeosq * (1.0 + (2.75 * (etasq + eeta)) + (eeta * etasq));
+      cosio4 = cosio2 * cosio2;
+      temp1 = 1.5 * j2 * pinvsq * satrec.no;
+      temp2 = 0.5 * temp1 * j2 * pinvsq;
+      temp3 = -0.46875 * j4 * pinvsq * pinvsq * satrec.no;
+      satrec.mdot = satrec.no + (0.5 * temp1 * rteosq * satrec.con41)
+        + (0.0625 * temp2 * rteosq * ((13.0 - (78.0 * cosio2)) + (137.0 * cosio4)));
+      satrec.argpdot = (-0.5 * temp1 * con42)
+        + (0.0625 * temp2 * ((7.0 - (114.0 * cosio2)) + (395.0 * cosio4)))
+        + (temp3 * ((3.0 - (36.0 * cosio2)) + (49.0 * cosio4)));
+      xhdot1 = -temp1 * cosio;
+      satrec.nodedot = xhdot1 + (((0.5 * temp2 * (4.0 - (19.0 * cosio2)))
+        + (2.0 * temp3 * (3.0 - (7.0 * cosio2)))) * cosio);
+      xpidot = satrec.argpdot + satrec.nodedot;
+      satrec.omgcof = satrec.bstar * cc3 * Math.Cos(satrec.argpo);
+      satrec.xmcof = 0.0;
+      if (satrec.ecco > 1.0e-4) {
+        satrec.xmcof = (-x2o3 * coef * satrec.bstar) / eeta;
+      }
+      satrec.nodecf = 3.5 * omeosq * xhdot1 * satrec.cc1;
+      satrec.t2cof = 1.5 * satrec.cc1;
+
+      // sgp4fix for divide by zero with xinco = 180 deg
+      if (Math.Abs(cosio + 1.0) > 1.5e-12) {
+        satrec.xlcof = (-0.25 * j3oj2 * sinio * (3.0 + (5.0 * cosio))) / (1.0 + cosio);
+      } else {
+        satrec.xlcof = (-0.25 * j3oj2 * sinio * (3.0 + (5.0 * cosio))) / temp4;
+      }
+      satrec.aycof = -0.5 * j3oj2 * sinio;
+
+      // sgp4fix use multiply for speed instead of pow
+      double delmotemp = 1.0 + (satrec.eta * Math.Cos(satrec.mo));
+      satrec.delmo = delmotemp * delmotemp * delmotemp;
+      satrec.sinmao = Math.Sin(satrec.mo);
+      satrec.x7thm1 = (7.0 * cosio2) - 1.0;
+
+
+       // --------------- deep space initialization -------------
+      if ((2 * pi) / satrec.no >= 225.0) {
+        satrec.method = 'd';
+        satrec.isimp = 1;
+        tc = 0.0;
+        inclm = satrec.inclo;
+
+        //dscomOptions
+
+        DscomOptions dscomOptions = new DscomOptions();
+        dscomOptions.epoch = epoch;
+        dscomOptions.ep = satrec.ecco;
+        dscomOptions.argpp = satrec.argpo;
+        dscomOptions.tc = tc;
+        dscomOptions.inclp = satrec.inclo;
+        dscomOptions.nodep = satrec.nodeo;
+        
+        dscomOptions.np = satrec.no;
+        dscomOptions.e3 = satrec.e3;
+        dscomOptions.ee2 = satrec.ee2;
+
+        dscomOptions.peo = satrec.peo;
+        dscomOptions.pgho = satrec.pgho;
+        dscomOptions.pho = satrec.pho;
+        dscomOptions.pinco = satrec.pinco;
+
+        dscomOptions.plo = satrec.plo;
+        dscomOptions.se2 = satrec.se2;
+        dscomOptions.se3 = satrec.se3;
+
+        dscomOptions.sgh2 = satrec.sgh2;
+        dscomOptions.sgh3 = satrec.sgh3;
+        dscomOptions.sgh4 = satrec.sgh4;
+
+        dscomOptions.sh2 = satrec.sh2;
+        dscomOptions.sh3 = satrec.sh3;
+        dscomOptions.si2 = satrec.si2;
+        dscomOptions.si3 = satrec.si3;
+
+        dscomOptions.sl2 = satrec.sl2;
+        dscomOptions.sl3 = satrec.sl3;
+        dscomOptions.sl4 = satrec.sl4;
+        
+        dscomOptions.xgh2 = satrec.xgh2;
+        dscomOptions.xgh3 = satrec.xgh3;
+        dscomOptions.xgh4 = satrec.xgh4;
+        dscomOptions.xh2 = satrec.xh2;
+        
+        dscomOptions.xh3 = satrec.xh3;
+        dscomOptions.xi2 = satrec.xi2;
+        dscomOptions.xi3 = satrec.xi3;
+        dscomOptions.xl2 = satrec.xl2;
+        
+        dscomOptions.xl3 = satrec.xl3;
+        dscomOptions.xl4 = satrec.xl4;
+
+        dscomOptions.zmol = satrec.zmol;
+        dscomOptions.zmos = satrec.zmos;
+
+    
+
+        Dscom dscom = new Dscom();
+        DscomResult dscomResult = new DscomResult();
+
+        dscomResult = dscom.dscom(dscomOptions); //TODO: Check 0.0 assignments are correct
+
+
+
+
+
+      }
+
+      // ----------- set variables if not deep space -----------
+      if (satrec.isimp != 1) {
+        cc1sq = satrec.cc1 * satrec.cc1;
+        satrec.d2 = 4.0 * ao * tsi * cc1sq;
+        temp = (satrec.d2 * tsi * satrec.cc1) / 3.0;
+        satrec.d3 = ((17.0 * ao) + sfour) * temp;
+        satrec.d4 = 0.5 * temp * ao * tsi * ((221.0 * ao) + (31.0 * sfour)) * satrec.cc1;
+        satrec.t3cof = satrec.d2 + (2.0 * cc1sq);
+        satrec.t4cof = 0.25 * ((3.0 * satrec.d3)
+          + (satrec.cc1 * ((12.0 * satrec.d2) + (10.0 * cc1sq))));
+        satrec.t5cof = 0.2 * (
+          (3.0 * satrec.d4)
+          + (12.0 * satrec.cc1 * satrec.d3)
+          + (6.0 * satrec.d2 * satrec.d2)
+          + (15.0 * cc1sq * ((2.0 * satrec.d2) + cc1sq))
+        );
+      }
+
+      /* finally propogate to zero epoch to initialize all others. */
+      // sgp4fix take out check to let satellites process until they are actually below earth surface
+      // if(satrec.error == 0)
+
+    }
+
+    // sgp4(satrec, 0, 0);
+
+    satrec.init = 'n';
+
+    /* eslint-enable no-param-reassign */
 
 
 
