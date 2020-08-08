@@ -682,7 +682,9 @@ namespace Satellite_cs{
 
     }
 
-    // sgp4(satrec, 0, 0);
+    Sgp4 sgp4 = new Sgp4();
+
+    sgp4.sgp4(satrec, 0);
 
     satrec.init = 'n';
 
