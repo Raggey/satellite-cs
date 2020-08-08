@@ -196,7 +196,7 @@ namespace Satellite_cs{
       double gam = 5.8351514 + (0.0019443680 * day);
       double zx = (0.39785416 * stem) / zsinil;
       double zy = (zcoshl * ctem) + (0.91744867 * zsinhl * stem);
-      zx = Math.Atan2(zy, zx); // CS Math.Atan2 args are reversed compared to JS
+      zx = Math.Atan2(zx, zy);
       zx += gam - xnodce;
       double zcosgl = Math.Cos(zx);
       double zsingl = Math.Sin(zx);

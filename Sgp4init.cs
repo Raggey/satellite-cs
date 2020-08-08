@@ -387,7 +387,6 @@ namespace Satellite_cs{
         tc = 0.0;
         inclm = satrec.inclo;
 
-        //dscomOptions
 
         DscomOptions dscomOptions = new DscomOptions();
         dscomOptions.epoch = epoch;
@@ -445,6 +444,109 @@ namespace Satellite_cs{
         DscomResult dscomResult = new DscomResult();
 
         dscomResult = dscom.dscom(dscomOptions); //TODO: Check 0.0 assignments are correct
+        
+        satrec.e3 = dscomResult.e3;
+        satrec.ee2 = dscomResult.ee2;
+
+        satrec.peo = dscomResult.peo;
+        satrec.pgho = dscomResult.pgho;
+        satrec.pho = dscomResult.pho;
+
+        satrec.pinco = dscomResult.pinco;
+        satrec.plo = dscomResult.plo;
+        satrec.se2 = dscomResult.se2;
+        satrec.se3 = dscomResult.se3;
+
+        satrec.sgh2 = dscomResult.sgh2;
+        satrec.sgh3 = dscomResult.sgh3;
+        satrec.sgh4 = dscomResult.sgh4;
+        satrec.sh2 = dscomResult.sh2;
+        satrec.sh3 = dscomResult.sh3;
+
+        satrec.si2 = dscomResult.si2;
+        satrec.si3 = dscomResult.si3;
+        satrec.sl2 = dscomResult.sl2;
+        satrec.sl3 = dscomResult.sl3;
+        satrec.sl4 = dscomResult.sl4;
+
+        sinim = dscomResult.sinim;
+        cosim = dscomResult.cosim;
+        em = dscomResult.em;
+        emsq = dscomResult.emsq;
+        s1 = dscomResult.s1;
+        s2 = dscomResult.s2;
+        s3 = dscomResult.s3;
+        s4 = dscomResult.s4;
+        s5 = dscomResult.s5;
+        ss1 = dscomResult.ss1;
+        ss2 = dscomResult.ss2;
+        ss3 = dscomResult.ss3;
+        ss4 = dscomResult.ss4;
+        ss5 = dscomResult.ss5;
+        sz1 = dscomResult.sz1;
+        sz3 = dscomResult.sz3;
+        sz11 = dscomResult.sz11;
+        sz13 = dscomResult.sz13;
+        sz21 = dscomResult.sz21;
+        sz23 = dscomResult.sz23;
+        sz31 = dscomResult.sz31;
+        sz33 = dscomResult.sz33;
+
+        satrec.xgh2 = dscomResult.xgh2;
+        satrec.xgh3 = dscomResult.xgh3;
+        satrec.xgh4 = dscomResult.xgh4;
+        satrec.xh2 = dscomResult.xh2;
+        satrec.xh3 = dscomResult.xh3;
+        satrec.xi2 = dscomResult.xi2;
+        satrec.xi3 = dscomResult.xi3;
+        satrec.xl2 = dscomResult.xl2;
+        satrec.xl3 = dscomResult.xl3;
+        satrec.xl4 = dscomResult.xl4;
+        satrec.zmol = dscomResult.zmol;
+        satrec.zmos = dscomResult.zmos;
+
+        nm = dscomResult.nm;
+        z1 = dscomResult.z1;
+        z3 = dscomResult.z3;
+        z11 = dscomResult.z11;
+        z13 = dscomResult.z13;
+        z21 = dscomResult.z21;
+        z23 = dscomResult.z23;
+        z31 = dscomResult.z31;
+        z33 = dscomResult.z33;
+
+
+        DpperOptions dpperOptions = new DpperOptions();
+        dpperOptions.inclo = inclm;
+        dpperOptions.init = satrec.init;
+        dpperOptions.ep = satrec.ecco;
+        dpperOptions.inclp = satrec.inclo;
+        dpperOptions.nodep = satrec.nodeo;
+        dpperOptions.argpp = satrec.argpo;
+        dpperOptions.mp = satrec.mo;
+        dpperOptions.opsmode = satrec.operationmode;
+
+
+        Dpper dpper = new Dpper();
+        DpperResult dpperResult = new DpperResult();
+
+        dpperResult = dpper.dpper(satrec, dpperOptions); 
+
+        satrec.ecco = dpperResult.ep;
+        satrec.inclo = dpperResult.inclp;
+        satrec.nodeo = dpperResult.nodep;
+        satrec.argpo = dpperResult.argpp;
+        satrec.mo = dpperResult.mp;
+
+        argpm = 0.0;
+        nodem = 0.0;
+        mm = 0.0;
+
+        
+
+
+
+        
 
 
 
