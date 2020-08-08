@@ -542,15 +542,119 @@ namespace Satellite_cs{
         nodem = 0.0;
         mm = 0.0;
 
-        
 
 
+        DsinitOptions dsinitOptions = new DsinitOptions();
 
-        
+        dsinitOptions.cosim = cosim;
+        dsinitOptions.emsq = emsq; 
+        dsinitOptions.argpo = satrec.argpo; 
+        dsinitOptions.s1 = s1; 
+        dsinitOptions.s2 = s2; 
+        dsinitOptions.s3 = s3;
+        dsinitOptions.s4 = s4;
+        dsinitOptions.s5 = s5;
+        dsinitOptions.sinim = sinim;
+        dsinitOptions.ss1 = ss1;
+        dsinitOptions.ss2 = ss2;
+        dsinitOptions.ss3 = ss3;
+        dsinitOptions.ss4 = ss4;
+        dsinitOptions.ss5 = ss5;
+        dsinitOptions.sz1 = sz1;
+        dsinitOptions.sz3 = sz3;
+        dsinitOptions.sz11 = sz11;
+        dsinitOptions.sz13 = sz13;
+        dsinitOptions.sz21 = sz21;
+        dsinitOptions.sz23 = sz23;
+        dsinitOptions.sz31 = sz31;
+        dsinitOptions.sz33 = sz33;
+        dsinitOptions.t = satrec.t;
 
+        dsinitOptions.tc = tc; 
+        dsinitOptions.gsto = satrec.gsto;
+        dsinitOptions.mo = satrec.mo;
+        dsinitOptions.mdot = satrec.mdot;
+        dsinitOptions.no = satrec.no;
+        dsinitOptions.nodeo = satrec.nodeo;
+        dsinitOptions.nodedot = satrec.nodedot;
 
+        dsinitOptions.xpidot = xpidot;
+        dsinitOptions.z1 = z1;
+        dsinitOptions.z3 = z3;
+        dsinitOptions.z11 = z11;
+        dsinitOptions.z13 = z13;
+        dsinitOptions.z21 = z21; 
+        dsinitOptions.z23 = z23;
+        dsinitOptions.z31 = z31;
+        dsinitOptions.z33 = z33;
+        dsinitOptions.ecco = satrec.ecco; 
 
+        dsinitOptions.eccsq = eccsq; 
+        dsinitOptions.em = em;
+        dsinitOptions.argpm = argpm;
+        dsinitOptions.inclm = inclm;
+        dsinitOptions.mm = mm;
+        dsinitOptions.nm = nm;
+        dsinitOptions.nodem = nodem;
 
+        dsinitOptions.irez = satrec.irez;
+        dsinitOptions.atime = satrec.atime;
+        dsinitOptions.d2201 = satrec.d2201;
+        dsinitOptions.d2211 = satrec.d2211;
+        dsinitOptions.d3210 = satrec.d3210;
+        dsinitOptions.d3222 = satrec.d3222;
+        dsinitOptions.d4410 = satrec.d4410;
+        dsinitOptions.d4422 = satrec.d4422;
+        dsinitOptions.d5220 = satrec.d5220;
+        dsinitOptions.d5232 = satrec.d5232;
+        dsinitOptions.d5421 = satrec.d5421;
+        dsinitOptions.d5433 = satrec.d5433;
+        dsinitOptions.dedt = satrec.dedt;
+        dsinitOptions.didt = satrec.didt;
+        dsinitOptions.dmdt = satrec.dmdt;
+        dsinitOptions.dnodt = satrec.dnodt;
+        dsinitOptions.domdt = satrec.domdt;
+        dsinitOptions.del1 = satrec.del1;
+        dsinitOptions.del2 = satrec.del2;
+        dsinitOptions.del3 = satrec.del3;
+        dsinitOptions.xfact = satrec.xfact;
+        dsinitOptions.xlamo = satrec.xlamo;
+        dsinitOptions.xli = satrec.xli;
+        dsinitOptions.xni = satrec.xni;
+
+        Dsinit dsinit =  new Dsinit();
+        DsinitResult dsinitResult = new DsinitResult();
+        dsinitResult = dsinit.dsinit(dsinitOptions); 
+
+        satrec.irez = dsinitResult.irez;
+        satrec.atime = dsinitResult.atime;
+        satrec.d2201 = dsinitResult.d2201;
+        satrec.d2211 = dsinitResult.d2211;
+
+        satrec.d3210 = dsinitResult.d3210;
+        satrec.d3222 = dsinitResult.d3222;
+        satrec.d4410 = dsinitResult.d4410;
+        satrec.d4422 = dsinitResult.d4422;
+        satrec.d5220 = dsinitResult.d5220;
+
+        satrec.d5232 = dsinitResult.d5232;
+        satrec.d5421 = dsinitResult.d5421;
+        satrec.d5433 = dsinitResult.d5433;
+        satrec.dedt = dsinitResult.dedt;
+        satrec.didt = dsinitResult.didt;
+
+        satrec.dmdt = dsinitResult.dmdt;
+        satrec.dnodt = dsinitResult.dnodt;
+        satrec.domdt = dsinitResult.domdt;
+        satrec.del1 = dsinitResult.del1;
+
+        satrec.del2 = dsinitResult.del2;
+        satrec.del3 = dsinitResult.del3;
+        satrec.xfact = dsinitResult.xfact;
+        satrec.xlamo = dsinitResult.xlamo;
+        satrec.xli = dsinitResult.xli;
+
+        satrec.xni = dsinitResult.xni;
 
       }
 
