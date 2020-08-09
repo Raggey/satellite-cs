@@ -186,9 +186,57 @@ namespace Satellite_cs{
       if (satrec.method == 'd') {
         tc = satrec.t;
 
-        //TODO: dspaceOptions
+        DspaceOptions dspaceOptions = new DspaceOptions();
 
-        
+        dspaceOptions.irez = satrec.irez;
+        dspaceOptions.d2201 = satrec.d2201;
+        dspaceOptions.d2211 = satrec.d2211;
+        dspaceOptions.d3210 = satrec.d3210;
+        dspaceOptions.d3222 = satrec.d3222;
+        dspaceOptions.d4410 = satrec.d4410;
+        dspaceOptions.d4422 = satrec.d4422;
+        dspaceOptions.d5220 = satrec.d5220;
+        dspaceOptions.d5232 = satrec.d5232;
+        dspaceOptions.d5421 = satrec.d5421;
+        dspaceOptions.d5433 = satrec.d5433;
+        dspaceOptions.dedt = satrec.dedt;
+        dspaceOptions.del1 = satrec.del1;
+        dspaceOptions.del2 = satrec.del2;
+        dspaceOptions.del3 = satrec.del3;
+        dspaceOptions.didt = satrec.didt;
+        dspaceOptions.dmdt = satrec.dmdt;
+        dspaceOptions.dnodt = satrec.dnodt;
+        dspaceOptions.domdt = satrec.domdt;
+        dspaceOptions.argpo = satrec.argpo;
+        dspaceOptions.argpdot = satrec.argpdot;
+        dspaceOptions.t = satrec.t;
+        dspaceOptions.tc = tc;
+        dspaceOptions.gsto = satrec.gsto;
+        dspaceOptions.xfact = satrec.xfact;
+        dspaceOptions.xlamo = satrec.xlamo;
+        dspaceOptions.no = satrec.no;
+        dspaceOptions.atime = satrec.atime;
+        dspaceOptions.em = em;
+        dspaceOptions.argpm = argpm;
+        dspaceOptions.inclm = inclm;
+        dspaceOptions.xli = satrec.xli;
+        dspaceOptions.mm = mm;
+        dspaceOptions.xni = satrec.xni;
+        dspaceOptions.nodem = nodem;
+        dspaceOptions.nm = nm;
+          
+
+        Dspace dspace = new Dspace();
+        DspaceResults dspaceResults = new DspaceResults();
+        dspaceResults = dspace.dspace(dspaceOptions);
+
+        em = dspaceResults.em;
+        argpm = dspaceResults.argpm;
+        inclm = dspaceResults.inclm;
+        mm = dspaceResults.mm;
+        nodem = dspaceResults.nodem;
+        nm = dspaceResults.nm;
+
 
       }
 

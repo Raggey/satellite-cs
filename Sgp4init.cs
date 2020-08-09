@@ -234,21 +234,7 @@ namespace Satellite_cs{
       
       satrec.init = 'y';
       satrec.t = 0.0;
-
-      // const initlOptions = {
-      //   satn,
-      //   ecco: satrec.ecco,
-
-      //   epoch,
-      //   inclo: satrec.inclo,
-      //   no: satrec.no,
-
-      //   method: satrec.method,
-      //   opsmode: satrec.operationmode,
-      // };
-
-      // const initlResult = initl(initlOptions);
-      
+           
       InitlOptions initlOptions = new InitlOptions();
       initlOptions.satn = satn;
       initlOptions.ecco = satrec.ecco;
@@ -443,7 +429,7 @@ namespace Satellite_cs{
         Dscom dscom = new Dscom();
         DscomResult dscomResult = new DscomResult();
 
-        dscomResult = dscom.dscom(dscomOptions); //TODO: Check 0.0 assignments are correct
+        dscomResult = dscom.dscom(dscomOptions); 
         
         satrec.e3 = dscomResult.e3;
         satrec.ee2 = dscomResult.ee2;
