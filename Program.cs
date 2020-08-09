@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Satellite_cs
 {
@@ -13,7 +14,19 @@ namespace Satellite_cs
         string line2 = "2 25544  51.6430 164.3636 0001088 140.8410 323.1994 15.49511774237787";
         
         Sat_Io io = new Sat_Io();
-        Satrec satrec = io.twoline2rv(line1,line2);
+        Satrec satrec = io.twoline2satrec(line1,line2);
+
+
+        // Console.WriteLine(satrec.a);
+        // Console.WriteLine(satrec.alta);
+        // Console.WriteLine(satrec.altp);
+        // Console.WriteLine(satrec.argpdot);
+
+
+
+
+
+
 
         Sgp4 sgp4 = new Sgp4();
         PositionAndVelocity positionAndVelocity = sgp4.sgp4(satrec, 0);

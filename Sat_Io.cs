@@ -68,7 +68,7 @@ namespace Satellite_cs{
       
     }
       
-    public Satrec twoline2rv(string longstr1, string longstr2) {
+    public Satrec twoline2satrec(string longstr1, string longstr2) {
 
       Globals globals = new Globals();
 
