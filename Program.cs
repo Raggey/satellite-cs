@@ -15,6 +15,18 @@ namespace Satellite_cs
         Sat_Io io = new Sat_Io();
         Satrec satrec = io.twoline2rv(line1,line2);
 
+        Sgp4 sgp4 = new Sgp4();
+        PositionAndVelocity positionAndVelocity = sgp4.sgp4(satrec, 0);
+
+        Console.WriteLine(positionAndVelocity.rx);
+        Console.WriteLine(positionAndVelocity.ry);
+        Console.WriteLine(positionAndVelocity.rz);
+
+        Console.WriteLine(positionAndVelocity.vx);
+        Console.WriteLine(positionAndVelocity.vy);
+        Console.WriteLine(positionAndVelocity.vz);
+
+
         Console.WriteLine("Look i didnt crash");
 
         // Console.WriteLine(line1.Substring(50, 2) );

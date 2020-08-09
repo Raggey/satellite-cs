@@ -186,7 +186,9 @@ namespace Satellite_cs{
       if (satrec.method == 'd') {
         tc = satrec.t;
 
-        // dspaceOptions
+        //TODO: dspaceOptions
+
+        
 
       }
 
@@ -211,18 +213,212 @@ namespace Satellite_cs{
         return noValue; //TODO set this to 0
       }
 
+       //  sgp4fix fix tolerance to avoid a divide by zero
+      if (em < 1.0e-6) {
+        em = 1.0e-6;
+      }
+      mm += satrec.no * templ;
+      xlm = mm + argpm + nodem;
+
+      nodem %= twoPi;
+      argpm %= twoPi;
+      xlm %= twoPi;
+      mm = (xlm - argpm - nodem) % twoPi;
+
+      // ----------------- compute extra mean quantities -------------
+      double sinim = Math.Sin(inclm);
+      double cosim = Math.Cos(inclm);
+
+      // -------------------- add lunar-solar periodics --------------
+      double ep = em;
+      xincp = inclm;
+      argpp = argpm;
+      nodep = nodem;
+      mp = mm;
+      sinip = sinim;
+      cosip = cosim;
+      if (satrec.method == 'd') {
+
+        DpperOptions dpperParameters = new DpperOptions();
+        dpperParameters.inclo = satrec.inclo;
+        dpperParameters.init = 'n';
+        dpperParameters.ep = ep;
+        dpperParameters.inclp = xincp;
+        dpperParameters.nodep = nodep;
+        dpperParameters.argpp = argpp;
+        dpperParameters.mp = mp;
+        dpperParameters.opsmode = satrec.operationmode;
 
 
+        Dpper dpper = new Dpper();
+        DpperResult dpperResult = new DpperResult();
+        dpperResult = dpper.dpper(satrec, dpperParameters);
+        ep = dpperResult.ep;
+        nodep = dpperResult.nodep;
+        argpp = dpperResult.argpp;
+        mp = dpperResult.mp;
 
+        xincp = dpperResult.inclp;
 
+        if (xincp < 0.0) {
+          xincp = -xincp;
+          nodep += pi;
+          argpp -= pi;
+        }
+        if (ep < 0.0 || ep > 1.0) {
+          //  printf("// error ep %f\n", ep);
+          satrec.error = 3;
+          //  sgp4fix add return
+          PositionAndVelocity noValue = new PositionAndVelocity();
+          return noValue; //TODO set this to 0
+        }
 
+      }
 
+      //  -------------------- long period periodics ------------------
+      if (satrec.method == 'd') {
+        sinip = Math.Sin(xincp);
+        cosip = Math.Cos(xincp);
+        satrec.aycof = -0.5 * j3oj2 * sinip;
 
+        //  sgp4fix for divide by zero for xincp = 180 deg
+        if (Math.Abs(cosip + 1.0) > 1.5e-12) {
+          satrec.xlcof = (-0.25 * j3oj2 * sinip * (3.0 + (5.0 * cosip))) / (1.0 + cosip);
+        } else {
+          satrec.xlcof = (-0.25 * j3oj2 * sinip * (3.0 + (5.0 * cosip))) / temp4;
+        }
+      }
 
+      double axnl = ep * Math.Cos(argpp);
+      temp = 1.0 / (am * (1.0 - (ep * ep)));
+      double aynl = (ep * Math.Sin(argpp)) + (temp * satrec.aycof);
+      double xl = mp + argpp + nodep + (temp * satrec.xlcof * axnl);
 
+      // --------------------- solve kepler's equation ---------------
+      double u = (xl - nodep) % twoPi;
+      eo1 = u;
+      tem5 = 9999.9;
+      double ktr = 1;
 
+      //    sgp4fix for kepler iteration
+      //    the following iteration needs better limits on corrections
+      while (Math.Abs(tem5) >= 1.0e-12 && ktr <= 10) {
+        sineo1 = Math.Sin(eo1);
+        coseo1 = Math.Cos(eo1);
+        tem5 = 1.0 - (coseo1 * axnl) - (sineo1 * aynl);
+        tem5 = (((u - (aynl * coseo1)) + (axnl * sineo1)) - eo1) / tem5;
+        if (Math.Abs(tem5) >= 0.95) {
+          if (tem5 > 0.0) {
+            tem5 = 0.95;
+          } else {
+            tem5 = -0.95;
+          }
+        }
+        eo1 += tem5;
+        ktr += 1;
+      }
       
+      //  ------------- short period preliminary quantities -----------
+      double ecose = (axnl * coseo1) + (aynl * sineo1);
+      double esine = (axnl * sineo1) - (aynl * coseo1);
+      double el2 = (axnl * axnl) + (aynl * aynl);
+      double pl = am * (1.0 - el2);
+      if (pl < 0.0) {
+        //  printf("// error pl %f\n", pl);
+        satrec.error = 4;
+        //  sgp4fix add return
+        PositionAndVelocity noValue = new PositionAndVelocity();
+        return noValue; //TODO set this to 0
+      }
+
+      double rl = am * (1.0 - ecose);
+      double rdotl = (Math.Sqrt(am) * esine) / rl;
+      double rvdotl = Math.Sqrt(pl) / rl;
+      double betal = Math.Sqrt(1.0 - el2);
+      temp = esine / (1.0 + betal);
+      double sinu = (am / rl) * (sineo1 - aynl - (axnl * temp));
+      double cosu = (am / rl) * ((coseo1 - axnl) + (aynl * temp));
+      su = Math.Atan2(sinu, cosu);
+      double sin2u = (cosu + cosu) * sinu;
+      double cos2u = 1.0 - (2.0 * sinu * sinu);
+      temp = 1.0 / pl;
+      double temp1 = 0.5 * j2 * temp;
+      double temp2 = temp1 * temp;
+
+      // -------------- update for short period periodics ------------
+      if (satrec.method == 'd') {
+        cosisq = cosip * cosip;
+        satrec.con41 = (3.0 * cosisq) - 1.0;
+        satrec.x1mth2 = 1.0 - cosisq;
+        satrec.x7thm1 = (7.0 * cosisq) - 1.0;
+      }
+
+      double mrt = (rl * (1.0 - (1.5 * temp2 * betal * satrec.con41)))
+        + (0.5 * temp1 * satrec.x1mth2 * cos2u);
+
+      // sgp4fix for decaying satellites
+      if (mrt < 1.0) {
+        // printf("// decay condition %11.6f \n",mrt);
+        satrec.error = 6;
+        // return {
+        //   position: false,
+        //   velocity: false,
+        // };
+
+        PositionAndVelocity noValue = new PositionAndVelocity();
+        return noValue; //TODO set this to 0
+      }
+
+      su -= 0.25 * temp2 * satrec.x7thm1 * sin2u;
+      double xnode = nodep + (1.5 * temp2 * cosip * sin2u);
+      double xinc = xincp + (1.5 * temp2 * cosip * sinip * cos2u);
+      double mvt = rdotl - ((nm * temp1 * satrec.x1mth2 * sin2u) / xke);
+      double rvdot = rvdotl + ((nm * temp1 * ((satrec.x1mth2 * cos2u) + (1.5 * satrec.con41))) / xke);
+
+
+      // --------------------- orientation vectors -------------------
+      double sinsu = Math.Sin(su);
+      double cossu = Math.Cos(su);
+      double snod = Math.Sin(xnode);
+      double cnod = Math.Cos(xnode);
+      double sini = Math.Sin(xinc);
+      double cosi = Math.Cos(xinc);
+      double xmx = -snod * cosi;
+      double xmy = cnod * cosi;
+      double ux = (xmx * sinsu) + (cnod * cossu);
+      double uy = (xmy * sinsu) + (snod * cossu);
+      double uz = sini * sinsu;
+      double vx = (xmx * cossu) - (cnod * sinsu);
+      double vy = (xmy * cossu) - (snod * sinsu);
+      double vz = sini * cossu;
+
+      // --------- position and velocity (in km and km/sec) ----------
+
       PositionAndVelocity positionAndVelocity = new PositionAndVelocity();
+      positionAndVelocity.rx = (mrt * ux) * earthRadius;
+      positionAndVelocity.ry = (mrt * uy) * earthRadius;
+      positionAndVelocity.rz = (mrt * uz) * earthRadius;
+      // double r = {
+      //   x: (mrt * ux) * earthRadius,
+      //   y: (mrt * uy) * earthRadius,
+      //   z: (mrt * uz) * earthRadius,
+      // };
+
+      positionAndVelocity.vx = ((mvt * ux) + (rvdot * vx)) * vkmpersec;
+      positionAndVelocity.vy = ((mvt * uy) + (rvdot * vy)) * vkmpersec;
+      positionAndVelocity.vz = ((mvt * uz) + (rvdot * vz)) * vkmpersec;
+      // double v = {
+      //   x: ((mvt * ux) + (rvdot * vx)) * vkmpersec,
+      //   y: ((mvt * uy) + (rvdot * vy)) * vkmpersec,
+      //   z: ((mvt * uz) + (rvdot * vz)) * vkmpersec,
+      // };
+
+      // return {
+      //   position: r,
+      //   velocity: v,
+      // };
+
+
       return positionAndVelocity;
 
     }
