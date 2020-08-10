@@ -22,7 +22,7 @@ namespace Satellite_cs
         
 
         // Set the Observer at 122.03 West by 36.96 North, in RADIANS
-        ObserverGd observerGd = new ObserverGd();
+        Geodetic observerGd = new Geodetic();
         Transform tf = new Transform();
 
         observerGd.longitude = tf.degreesToRadians(-122.0308);

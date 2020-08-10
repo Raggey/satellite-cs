@@ -6,16 +6,14 @@ namespace Satellite_cs{
 
   public class PositionAndVelocity {
 
-    public double rx;
-    public double ry;
-    public double rz;
-
-    public double vx;
-    public double vy;
-    public double vz;
+    public Coordiantes position_ECI;
+    public Coordiantes velocity_ECI;
 
 
     public PositionAndVelocity(){
+
+      position_ECI = new Coordiantes();
+      velocity_ECI = new Coordiantes();
 
     }
 

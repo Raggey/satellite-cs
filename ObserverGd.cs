@@ -4,7 +4,7 @@ using System;
 namespace Satellite_cs{
 
 
-  public class ObserverGd{
+  public class Geodetic{
 
     public double longitude;
     public double latitude;
@@ -12,7 +12,7 @@ namespace Satellite_cs{
 
 
 
-    public ObserverGd(){
+    public Geodetic(){
 
     }
 

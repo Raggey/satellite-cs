@@ -443,18 +443,23 @@ namespace Satellite_cs{
       // --------- position and velocity (in km and km/sec) ----------
 
       PositionAndVelocity positionAndVelocity = new PositionAndVelocity();
-      positionAndVelocity.rx = (mrt * ux) * earthRadius;
-      positionAndVelocity.ry = (mrt * uy) * earthRadius;
-      positionAndVelocity.rz = (mrt * uz) * earthRadius;
+     
+      positionAndVelocity.position_ECI.x = (mrt * ux) * earthRadius;
+      positionAndVelocity.position_ECI.y = (mrt * uy) * earthRadius;
+      positionAndVelocity.position_ECI.z = (mrt * uz) * earthRadius;
+
       // double r = {
       //   x: (mrt * ux) * earthRadius,
       //   y: (mrt * uy) * earthRadius,
       //   z: (mrt * uz) * earthRadius,
       // };
 
-      positionAndVelocity.vx = ((mvt * ux) + (rvdot * vx)) * vkmpersec;
-      positionAndVelocity.vy = ((mvt * uy) + (rvdot * vy)) * vkmpersec;
-      positionAndVelocity.vz = ((mvt * uz) + (rvdot * vz)) * vkmpersec;
+      positionAndVelocity.velocity_ECI.x = ((mvt * ux) + (rvdot * vx)) * vkmpersec;
+      positionAndVelocity.velocity_ECI.y = ((mvt * uy) + (rvdot * vy)) * vkmpersec;
+      positionAndVelocity.velocity_ECI.z = ((mvt * uz) + (rvdot * vz)) * vkmpersec;
+
+
+
       // double v = {
       //   x: ((mvt * ux) + (rvdot * vx)) * vkmpersec,
       //   y: ((mvt * uy) + (rvdot * vy)) * vkmpersec,
