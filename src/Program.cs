@@ -9,7 +9,7 @@ namespace Satellite_cs
         {
 
 
-        string line0 = "ISS (ZARYA)    ";
+        // string line0 = "ISS (ZARYA)    ";
         string line1 = "1 25544U 98067A   20206.38292522 -.00000985  00000-0 -95291-5 0  9998";
         string line2 = "2 25544  51.6430 164.3636 0001088 140.8410 323.1994 15.49511774237787";
         
