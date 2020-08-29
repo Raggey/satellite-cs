@@ -30,6 +30,10 @@ namespace Satellite_cs
         observerGd.height = 0.370;
 
 
+        Console.WriteLine(positionAndVelocity.position_ECI.x);
+        Console.WriteLine(positionAndVelocity.position_ECI.y);
+        Console.WriteLine(positionAndVelocity.position_ECI.z);
+
 
 
 
