@@ -7,7 +7,7 @@ language: cscharp
 # dotnet: 3.1.302
 
 install:
-  - nuget install xunit.runners -Version 2.4.1 -OutputDirectory testrunner
+  - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
 
 
 # jobs:
