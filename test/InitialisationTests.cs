@@ -1,20 +1,11 @@
 using Xunit;
 using Sat = Satellite_cs;
 
-namespace MyFirstUnitTests
+namespace UnitTests
 {
-    public class Class1
+    public class InitialisationTests
     {
 
-
-        [Fact]
-        public void PassingTest(){
-
-            Assert.Equal(4, Add(2,2));
-        }
-        int Add (int x, int y){
-            return x + y;
-        }
 
 
         [Fact]
@@ -31,27 +22,6 @@ namespace MyFirstUnitTests
           Assert.Equal( 485.6716711104389, positionAndVelocity.position_ECI.x ); // Value from Sat.js
           Assert.Equal(-4381.651985814846, positionAndVelocity.position_ECI.y ); // Value from Sat.js
           Assert.Equal(5162.784591395867, positionAndVelocity.position_ECI.z  ); // Value from Sat.js
-
-
         }
-
-       
-
-
-
-        [Theory]
-        [InlineData(3)]
-        [InlineData(5)]
-        public void MyFirstTheory(int value){
-            Assert.True(IsOdd(value));
-        }
-
-        bool IsOdd(int value){
-            return value % 2 == 1;
-        }
-
-
-
-
     }
 }
