@@ -35,7 +35,14 @@ namespace Satellite_cs
         Console.WriteLine(positionAndVelocity.position_ECI.z);
 
 
+        Gstime gmst = new Gstime();
+        DateTime newDate = DateTime.Now;
+        double gmstTime = gmst.gstime(newDate); // GMST definition 
 
+
+
+        Console.WriteLine(newDate);
+         DateTime UTCdate = newDate.ToUniversalTime();
 
         Console.WriteLine("Look i didnt crash");
 
