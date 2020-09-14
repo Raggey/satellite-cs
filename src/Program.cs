@@ -16,12 +16,23 @@ namespace Satellite_cs
         Sat_Io io = new Sat_Io();
         Satrec satrec = io.twoline2satrec(line1,line2);
 
-        Sgp4 sgp4 = new Sgp4();
-        PositionAndVelocity positionAndVelocity = sgp4.sgp4(satrec, 0);
 
-        // TODO: Impl date
-//         //  Or you can use a JavaScript Date
-// var positionAndVelocity = satellite.propagate(satrec, new Date());
+        Gstime gmst = new Gstime();
+        DateTime newDate = DateTime.Now;
+
+        Sgp4 sgp4 = new Sgp4();
+        // Pass minutes since epoc
+        // PositionAndVelocity positionAndVelocity = sgp4.sgp4(satrec, 0);
+
+        // Or you can use the DateTime object Date
+
+        Propagate propagate = new Propagate();
+        PositionAndVelocity positionAndVelocity = propagate.propagate(satrec, newDate);
+      
+        Console.WriteLine(positionAndVelocity.position_ECI.x);
+        Console.WriteLine(positionAndVelocity.position_ECI.y);
+        Console.WriteLine(positionAndVelocity.position_ECI.z);
+        
 
         // Set the Observer at 122.03 West by 36.96 North, in RADIANS
         Geodetic observerGd = new Geodetic();
@@ -33,8 +44,7 @@ namespace Satellite_cs
         observerGd.height = 0.370;
 
 
-        Gstime gmst = new Gstime();
-        DateTime newDate = DateTime.Now;
+       
         double gmstTime = gmst.gstime(newDate); // GMST definition 
 
         DateTime UTCdate = newDate.ToUniversalTime();
@@ -47,10 +57,10 @@ namespace Satellite_cs
         LookAngles lookAngles = tf.ecfToLookAngles(observerGd, positionEcf);
         double dopplerFactor = df.dopplerFactor(observerEcf, positionEcf, velocityEcf);
 
-        Console.WriteLine(dopplerFactor);
-        Console.WriteLine(lookAngles.azimuth);
-        Console.WriteLine(lookAngles.elevation);
-        Console.WriteLine(lookAngles.rangeSat);
+        // Console.WriteLine(dopplerFactor);
+        // Console.WriteLine(lookAngles.azimuth);
+        // Console.WriteLine(lookAngles.elevation);
+        // Console.WriteLine(lookAngles.rangeSat);
         Console.WriteLine("Look i didnt crash");
 
 
