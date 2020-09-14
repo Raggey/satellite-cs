@@ -1,6 +1,6 @@
 namespace Satellite_cs
 {
-  public class Coordiantes  {
+  public class Coordinates   {
 
       public double x;
       public double y;

@@ -16,27 +16,51 @@ namespace Satellite_cs
         Sat_Io io = new Sat_Io();
         Satrec satrec = io.twoline2satrec(line1,line2);
 
-        Sgp4 sgp4 = new Sgp4();
-        PositionAndVelocity positionAndVelocity = sgp4.sgp4(satrec, 0);
 
+        Gstime gmst = new Gstime();
+        DateTime newDate = DateTime.Now;
+
+        Sgp4 sgp4 = new Sgp4();
+        // Pass minutes since epoc
+        // PositionAndVelocity positionAndVelocity = sgp4.sgp4(satrec, 0);
+
+        // Or you can use the DateTime object Date
+
+        Propagate propagate = new Propagate();
+        PositionAndVelocity positionAndVelocity = propagate.propagate(satrec, newDate);
+      
+        Console.WriteLine(positionAndVelocity.position_ECI.x);
+        Console.WriteLine(positionAndVelocity.position_ECI.y);
+        Console.WriteLine(positionAndVelocity.position_ECI.z);
         
 
         // Set the Observer at 122.03 West by 36.96 North, in RADIANS
         Geodetic observerGd = new Geodetic();
         Transform tf = new Transform();
+        DopplerFactor df = new DopplerFactor();
 
         observerGd.longitude = tf.degreesToRadians(-122.0308);
         observerGd.latitude = tf.degreesToRadians(36.9613422);
         observerGd.height = 0.370;
 
 
-        Console.WriteLine(positionAndVelocity.position_ECI.x);
-        Console.WriteLine(positionAndVelocity.position_ECI.y);
-        Console.WriteLine(positionAndVelocity.position_ECI.z);
+       
+        double gmstTime = gmst.gstime(newDate); // GMST definition 
 
+        DateTime UTCdate = newDate.ToUniversalTime();
 
+        // // You can get ECF, Geodetic, Look Angles, and Doppler Factor.
+        Coordinates positionEcf = tf.eciToEcf(positionAndVelocity.position_ECI, gmstTime);
+        Coordinates observerEcf = tf.geodeticToEcf(observerGd);
+        Coordinates velocityEcf = tf.eciToEcf(positionAndVelocity.velocity_ECI, gmstTime);
+        Geodetic positionGd = tf.eciToGeodetic(positionAndVelocity.position_ECI, gmstTime);
+        LookAngles lookAngles = tf.ecfToLookAngles(observerGd, positionEcf);
+        double dopplerFactor = df.dopplerFactor(observerEcf, positionEcf, velocityEcf);
 
-
+        // Console.WriteLine(dopplerFactor);
+        // Console.WriteLine(lookAngles.azimuth);
+        // Console.WriteLine(lookAngles.elevation);
+        // Console.WriteLine(lookAngles.rangeSat);
         Console.WriteLine("Look i didnt crash");
 
 

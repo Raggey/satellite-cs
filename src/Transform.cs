@@ -62,7 +62,7 @@ namespace Satellite_cs{
     }
 
 
-    public Coordiantes geodeticToEcf(Geodetic geodetic) {
+    public Coordinates geodeticToEcf(Geodetic geodetic) {
 
       double longitude = geodetic.longitude;
       double latitude = geodetic.latitude;
@@ -78,7 +78,7 @@ namespace Satellite_cs{
       double y = (normal + height) * Math.Cos(latitude) * Math.Sin(longitude);
       double z = ((normal * (1 - e2)) + height) * Math.Sin(latitude);
 
-      Coordiantes ecf = new Coordiantes();
+      Coordinates ecf = new Coordinates();
       ecf.x = x;
       ecf.y = y;
       ecf.z = z;
@@ -86,7 +86,7 @@ namespace Satellite_cs{
       return ecf;
     }
 
-    public Geodetic eciToGeodetic(Coordiantes eci, double gmst) {
+    public Geodetic eciToGeodetic(Coordinates eci, double gmst) {
       // http://www.celestrak.com/columns/v02n03/
       double a = 6378.137;
       double b = 6356.7523142;
@@ -125,7 +125,7 @@ namespace Satellite_cs{
       return geodetic;
     }
 
-    public Coordiantes ecfToEci(Coordiantes ecf, double gmst) {
+    public Coordinates ecfToEci(Coordinates ecf, double gmst) {
       // ccar.colorado.edu/ASEN5070/handouts/coordsys.doc
       //
       // [X]     [C -S  0][X]
@@ -136,14 +136,14 @@ namespace Satellite_cs{
       double Y = (ecf.x * (Math.Sin(gmst))) + (ecf.y * Math.Cos(gmst));
       double Z = ecf.z;
 
-      Coordiantes eci = new Coordiantes();
+      Coordinates eci = new Coordinates();
       eci.x = X;
       eci.y = Y;
       eci.z = Z;
       return eci;
     }
 
-    public Coordiantes eciToEcf(Coordiantes eci, double gmst) {
+    public Coordinates eciToEcf(Coordinates eci, double gmst) {
       // ccar.colorado.edu/ASEN5070/handouts/coordsys.doc
       //
       // [X]     [C -S  0][X]
@@ -159,51 +159,50 @@ namespace Satellite_cs{
       double x = (eci.x * Math.Cos(gmst)) + (eci.y * Math.Sin(gmst));
       double y = (eci.x * (-Math.Sin(gmst))) + (eci.y * Math.Cos(gmst));
       // double { z } = eci;
-      double z  = eci.z; //TODO: Verify this line
+      double z  = eci.z;  
 
-      Coordiantes ecf = new Coordiantes();
+      Coordinates ecf = new Coordinates();
       ecf.x = x;
       ecf.y = y;
       ecf.z = z;
       return ecf;
 
-      // return {
-      //   x,
-      //   y,
-      //   z,
-      // };
     }
 
 
-//     topocentric(observerGeodetic, satelliteEcf) {
-//   // http://www.celestrak.com/columns/v02n02/
-//   // TS Kelso's method, except I'm using ECF frame
-//   // and he uses ECI.
+    Topocentric topocentric(Geodetic observerGeodetic, Coordinates satelliteEcf) {
+      // http://www.celestrak.com/columns/v02n02/
+      // TS Kelso's method, except I'm using ECF frame
+      // and he uses ECI.
 
-//   const {
-//     longitude,
-//     latitude,
-//   } = observerGeodetic;
+      double longitude = observerGeodetic.longitude;
+      double latitude = observerGeodetic.latitude;
 
-//   const observerEcf = geodeticToEcf(observerGeodetic);
+      Coordinates observerEcf = geodeticToEcf(observerGeodetic);
 
-//   const rx = satelliteEcf.x - observerEcf.x;
-//   const ry = satelliteEcf.y - observerEcf.y;
-//   const rz = satelliteEcf.z - observerEcf.z;
+      double rx = satelliteEcf.x - observerEcf.x;
+      double ry = satelliteEcf.y - observerEcf.y;
+      double rz = satelliteEcf.z - observerEcf.z;
 
-//   const topS = ((Math.sin(latitude) * Math.cos(longitude) * rx)
-//       + (Math.sin(latitude) * Math.sin(longitude) * ry))
-//     - (Math.cos(latitude) * rz);
+      double topS = ((Math.Sin(latitude) * Math.Cos(longitude) * rx)
+          + (Math.Sin(latitude) * Math.Sin(longitude) * ry))
+        - (Math.Cos(latitude) * rz);
 
-//   const topE = (-Math.sin(longitude) * rx)
-//     + (Math.cos(longitude) * ry);
+      double topE = (-Math.Sin(longitude) * rx)
+        + (Math.Cos(longitude) * ry);
 
-//   const topZ = (Math.cos(latitude) * Math.cos(longitude) * rx)
-//     + (Math.cos(latitude) * Math.sin(longitude) * ry)
-//     + (Math.sin(latitude) * rz);
+      double topZ = (Math.Cos(latitude) * Math.Cos(longitude) * rx)
+        + (Math.Cos(latitude) * Math.Sin(longitude) * ry)
+        + (Math.Sin(latitude) * rz);
 
-//   return { topS, topE, topZ };
-// }
+      Topocentric topo = new Topocentric();
+      topo.topS = topS;
+      topo.topE = topE;
+      topo.topZ = topZ;
+      return topo;
+
+
+    }
 
 
 
@@ -216,24 +215,31 @@ namespace Satellite_cs{
  * @param {Number} tc.topZ Vector Z normal to the surface of the earth (up).
  * @returns {Object}
  */
-// function topocentricToLookAngles(tc) {
-//   const { topS, topE, topZ } = tc;
-//   const rangeSat = Math.sqrt((topS * topS) + (topE * topE) + (topZ * topZ));
-//   const El = Math.asin(topZ / rangeSat);
-//   const Az = Math.atan2(-topE, topS) + pi;
 
-//   return {
-//     azimuth: Az,
-//     elevation: El,
-//     rangeSat, // Range in km
-//   };
-// }
+  public LookAngles topocentricToLookAngles( Topocentric tc) {
+    
+    double topS = tc.topS;
+    double topE = tc.topE;
+    double topZ = tc.topZ;
+
+    double rangeSat = Math.Sqrt((topS * topS) + (topE * topE) + (topZ * topZ));
+    double El = Math.Asin(topZ / rangeSat);
+    double Az = Math.Atan2(-topE, topS) + pi;
+
+    LookAngles lookAngles = new LookAngles();
+    lookAngles.azimuth = Az;
+    lookAngles.elevation = El;
+    lookAngles.rangeSat = rangeSat;
+
+    return lookAngles;
+
+  }
 
 
-// ecfToLookAngles(observerGeodetic, satelliteEcf) {
-//   const topocentricCoords = topocentric(observerGeodetic, satelliteEcf);
-//   return topocentricToLookAngles(topocentricCoords);
-// }
+  public LookAngles ecfToLookAngles(Geodetic observerGeodetic, Coordinates satelliteEcf) {
+    Topocentric topocentricCoords = topocentric(observerGeodetic, satelliteEcf);
+    return topocentricToLookAngles(topocentricCoords);
+  }
 
 
 
