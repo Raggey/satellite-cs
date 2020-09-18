@@ -28,11 +28,6 @@ namespace Satellite_cs
 
         Propagate propagate = new Propagate();
         PositionAndVelocity positionAndVelocity = propagate.propagate(satrec, newDate);
-      
-        Console.WriteLine(positionAndVelocity.position_ECI.x);
-        Console.WriteLine(positionAndVelocity.position_ECI.y);
-        Console.WriteLine(positionAndVelocity.position_ECI.z);
-        
 
         // Set the Observer at 122.03 West by 36.96 North, in RADIANS
         Geodetic observerGd = new Geodetic();
@@ -82,9 +77,6 @@ namespace Satellite_cs
 
         Console.WriteLine("Long: " + longitudeStr);
         Console.WriteLine("Lat: " + latitudeStr);
-
-        Console.WriteLine("Look i didnt crash");
-
 
         }
     }
