@@ -21,6 +21,9 @@ namespace Satellite_cs {
 
     public Satellite_cs(string line1, string line2) {
 
+      this.line1 = line1;
+      this.line2 = line2;
+
       //TODO: Refactor. 
       Sat_Io io = new Sat_Io();
       Satrec satrec = io.twoline2satrec(line1,line2);
