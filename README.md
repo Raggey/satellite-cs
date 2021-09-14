@@ -1,6 +1,6 @@
 # satellite-cs
 
-[![Build Status](https://travis-ci.com/Raggey/satellite-cs.svg?branch=master)](https://travis-ci.com/Raggey/satellite-cs)
+[![Build Status](https://app.travis-ci.com/Raggey/satellite-cs.svg?branch=master)](https://app.travis-ci.com/github/Raggey/satellite-cs)
 
 
 # C# Implementation of Satellite-JS library  
